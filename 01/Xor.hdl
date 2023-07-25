@@ -6,6 +6,7 @@
 /**
  * Exclusive-or gate:
  * out = not (a == b)
+ * idea: Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))
  */
 
 CHIP Xor {
@@ -14,4 +15,9 @@ CHIP Xor {
 
     PARTS:
     // Put your code here:
+    Not(in=b, out=notB);
+    And(a=a, b=notB, out=out1);
+    Not(in=a, out=notA);
+    And(a=notA, b=b, out=out2);
+    Or(a=out1, b=out2, out=out);
 }

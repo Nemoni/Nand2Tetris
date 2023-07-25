@@ -7,6 +7,7 @@
  * Or gate:
  * out = 1 if (a == 1 or b == 1)
  *       0 otherwise
+ * idea: Or(a, b) = Nand(Nand(a, a), Nand(b, b))
  */
 
 CHIP Or {
@@ -15,4 +16,7 @@ CHIP Or {
 
     PARTS:
     // Put your code here:
+    Nand(a=a, b=a, out=out1);
+    Nand(a=b, b=b, out=out2);
+    Nand(a=out1, b=out2, out=out);
 }
