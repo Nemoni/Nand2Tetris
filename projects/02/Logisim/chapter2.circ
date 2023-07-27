@@ -449,6 +449,7 @@
     <a name="simulationFrequency" val="1.0"/>
     <comp lib="0" loc="(160,140)" name="Pin">
       <a name="appearance" val="NewPins"/>
+      <a name="label" val="i"/>
       <a name="radix" val="16"/>
       <a name="width" val="16"/>
     </comp>
@@ -458,6 +459,7 @@
     <comp lib="0" loc="(420,140)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
+      <a name="label" val="o"/>
       <a name="output" val="true"/>
       <a name="radix" val="16"/>
       <a name="width" val="16"/>
