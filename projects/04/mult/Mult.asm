@@ -10,3 +10,37 @@
 // R0 >= 0, R1 >= 0, and R0*R1 < 32768.
 
 // Put your code here.
+// M*N相当于M个N相加
+
+    // R2清空
+    @2
+    M=0
+    // 若R0小于0则无法处理，直接结束
+    @0
+    D=M
+    @END
+    D;JLT
+    // 若R1小于0则无法处理，直接结束
+    @1
+    D=M
+    @END
+    D;JLT
+
+(LOOP)
+    // R0从0处理到R1-1，所以可以先减1然后判断是否让总和加上R1的值
+    @0
+    M=M-1
+    D=M
+    @END
+    D;JLT
+    // R2加上R1的值
+    @1
+    D=M
+    @2
+    M=M+D
+    @LOOP
+    0;JMP
+
+(END)
+    @END
+    0;JMP
