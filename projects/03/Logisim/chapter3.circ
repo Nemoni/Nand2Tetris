@@ -18,7 +18,7 @@
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <main name="main"/>
+  <main name="RSFF"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
     <a name="simlimit" val="1000"/>
@@ -54,11 +54,6 @@
     <tool lib="4" name="D Flip-Flop"/>
     <tool lib="4" name="Register"/>
   </toolbar>
-  <circuit name="main">
-    <a name="appearance" val="logisim_evolution"/>
-    <a name="circuit" val="main"/>
-    <a name="simulationFrequency" val="1.0"/>
-  </circuit>
   <circuit name="RSFF">
     <a name="appearance" val="logisim_evolution"/>
     <a name="circuit" val="RSFF"/>
@@ -728,36 +723,69 @@
     <wire from="(810,410)" to="(840,410)"/>
   </circuit>
   <circuit name="PC_Optimize">
-    <a name="appearance" val="logisim_evolution"/>
+    <a name="appearance" val="custom"/>
     <a name="circuit" val="PC_Optimize"/>
     <a name="simulationFrequency" val="1.0"/>
+    <appear>
+      <rect height="9" stroke="none" width="4" x="78" y="40"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="start" x="73" y="61">inc</text>
+      <rect height="9" stroke="none" width="4" x="108" y="41"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="start" x="98" y="61">load</text>
+      <rect height="10" stroke="none" width="4" x="138" y="39"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="start" x="127" y="61">reset</text>
+      <rect height="4" stroke="none" width="10" x="50" y="68"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="start" x="66" y="74">i</text>
+      <rect height="4" stroke="none" width="10" x="191" y="68"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="end" x="185" y="73">o</text>
+      <rect height="19" stroke="none" width="130" x="60" y="93"/>
+      <rect fill="none" height="62" stroke="#000000" stroke-width="2" width="130" x="60" y="50"/>
+      <text dominant-baseline="alphabetic" fill="#ffffff" font-family="Dialog" font-size="14" font-weight="bold" text-anchor="middle" x="127" y="106">PC_Optimize</text>
+      <rect height="10" stroke="none" width="4" x="168" y="40"/>
+      <text dominant-baseline="alphabetic" fill="#404040" font-family="Dialog" font-size="12" text-anchor="start" x="156" y="61">clock</text>
+      <circ-anchor facing="east" x="200" y="70"/>
+      <circ-port dir="in" pin="230,260" x="50" y="70"/>
+      <circ-port dir="in" pin="380,80" x="80" y="40"/>
+      <circ-port dir="in" pin="480,80" x="110" y="40"/>
+      <circ-port dir="in" pin="580,80" x="140" y="40"/>
+      <circ-port dir="in" pin="660,80" x="170" y="40"/>
+      <circ-port dir="out" pin="870,240" x="200" y="70"/>
+    </appear>
     <comp lib="0" loc="(230,260)" name="Pin">
       <a name="appearance" val="NewPins"/>
+      <a name="label" val="i"/>
       <a name="width" val="16"/>
     </comp>
     <comp lib="0" loc="(250,340)" name="Constant">
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(360,40)" name="Pin">
+    <comp lib="0" loc="(380,80)" name="Pin">
       <a name="appearance" val="NewPins"/>
+      <a name="facing" val="south"/>
       <a name="label" val="inc"/>
     </comp>
-    <comp lib="0" loc="(470,40)" name="Pin">
+    <comp lib="0" loc="(480,80)" name="Pin">
       <a name="appearance" val="NewPins"/>
+      <a name="facing" val="south"/>
       <a name="label" val="load"/>
     </comp>
     <comp lib="0" loc="(520,270)" name="Constant">
       <a name="value" val="0x0"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(570,40)" name="Pin">
+    <comp lib="0" loc="(580,80)" name="Pin">
       <a name="appearance" val="NewPins"/>
+      <a name="facing" val="south"/>
       <a name="label" val="reset"/>
     </comp>
-    <comp lib="0" loc="(630,230)" name="Clock"/>
+    <comp lib="0" loc="(660,80)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="facing" val="south"/>
+      <a name="label" val="clock"/>
+    </comp>
     <comp lib="0" loc="(870,240)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
+      <a name="label" val="o"/>
       <a name="output" val="true"/>
       <a name="width" val="16"/>
     </comp>
@@ -789,23 +817,19 @@
     <wire from="(340,350)" to="(340,360)"/>
     <wire from="(340,360)" to="(380,360)"/>
     <wire from="(360,330)" to="(410,330)"/>
-    <wire from="(360,40)" to="(380,40)"/>
-    <wire from="(380,40)" to="(380,360)"/>
+    <wire from="(380,80)" to="(380,360)"/>
     <wire from="(410,240)" to="(410,330)"/>
     <wire from="(410,240)" to="(430,240)"/>
     <wire from="(440,270)" to="(440,290)"/>
     <wire from="(440,290)" to="(480,290)"/>
     <wire from="(460,250)" to="(530,250)"/>
-    <wire from="(470,40)" to="(480,40)"/>
-    <wire from="(480,40)" to="(480,290)"/>
+    <wire from="(480,80)" to="(480,290)"/>
     <wire from="(520,270)" to="(530,270)"/>
     <wire from="(540,280)" to="(540,290)"/>
     <wire from="(540,290)" to="(580,290)"/>
     <wire from="(560,260)" to="(660,260)"/>
-    <wire from="(570,40)" to="(580,40)"/>
-    <wire from="(580,40)" to="(580,290)"/>
-    <wire from="(630,230)" to="(660,230)"/>
-    <wire from="(660,230)" to="(660,240)"/>
+    <wire from="(580,80)" to="(580,290)"/>
+    <wire from="(660,80)" to="(660,240)"/>
     <wire from="(770,240)" to="(770,410)"/>
     <wire from="(770,240)" to="(870,240)"/>
   </circuit>
