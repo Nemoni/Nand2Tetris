@@ -40,4 +40,37 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Not(in=instruction[15], out=isAInstruction);
+    Mux16(a=computeResult, b=instruction, sel=isAInstruction, out=ARIn);
+
+    And(a=instruction[15], b=instruction[0], out=jmpGT);
+    And(a=instruction[15], b=instruction[1], out=jmpEQ);
+    And(a=instruction[15], b=instruction[2], out=jmpLT);
+
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    And(a=instruction[15], b=instruction[4], out=destD);
+    And(a=instruction[15], b=instruction[5], out=destA);
+
+    And(a=instruction[15], b=instruction[6], out=no);
+    And(a=instruction[15], b=instruction[7], out=f);
+    And(a=instruction[15], b=instruction[8], out=ny);
+    And(a=instruction[15], b=instruction[9], out=zy);
+    And(a=instruction[15], b=instruction[10], out=nx);
+    And(a=instruction[15], b=instruction[11], out=zx);
+
+    And(a=instruction[15], b=instruction[12], out=AMChoose);
+
+    Or(a=isAInstruction, b=destA, out=loadAR);
+    ARegister(in=ARIn, load=loadAR, out[0..14]=addressM, out=AROut);
+    DRegister(in=computeResult, load=destD, out=DROut);
+    Mux16(a=AROut, b=inM, sel=AMChoose, out=AMIn);
+    ALU(x=DROut, y=AMIn, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=computeResult, out=outM, zr=zr, ng=ng);
+    And(a=jmpEQ, b=zr, out=jeqOut);
+    And(a=jmpLT, b=ng, out=jltOut);
+    Or(a=jeqOut, b=jltOut, out=jleqOut);
+    Or(a=zr, b=ng, out=leOut);
+    Not(in=leOut, out=jgOut);
+    And(a=jmpGT, b=jgOut, out=jmOut);
+    Or(a=jleqOut, b=jmOut, out=PCLoad);
+    PC(in=AROut, inc=true, load=PCLoad, reset=reset, out[0..14]=pc);
 }
