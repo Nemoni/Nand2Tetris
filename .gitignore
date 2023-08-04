@@ -1,2 +1,4 @@
 *.out
+*.hack
+*.pre
 /tools/

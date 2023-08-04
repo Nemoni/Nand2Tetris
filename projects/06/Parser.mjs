@@ -1,5 +1,6 @@
-import Code from "./Code.mjs";
 import fs from "fs";
+import Code from "./Code.mjs";
+import SymbolTable from "./SymbolTable.mjs";
 
 const CmdType = {
   A_COMMAND: "A_command",
@@ -9,14 +10,18 @@ const CmdType = {
 
 class Parser {
   constructor(data, precompiledFilePath) {
-    this.Code = new Code();
+    this.code = new Code();
+    this.symbolTable = new SymbolTable();
     this.lines = data.split("\n");
     this.currentCommand = "";
     this.precompiledInstructions = [];
     this.precompiledFilePath = precompiledFilePath;
+    this.currentRamAddress = 16;
   }
+
   // 预处理，处理空行、注释、空格、符号等
   precompile() {
+    let commandNumber = 0;
     for (let i = 0; i < this.lines.length; i++) {
       let line = this.lines[i].replace(/[ \t]/g, ""); // 去掉空格和制表符
 
@@ -33,6 +38,16 @@ class Parser {
       }
 
       // 处理符号
+      const commandType = this.commandType(line);
+      if (commandType === CmdType.L_COMMAND) {
+        const symbol = this.Symbol(line);
+        if(isNaN(symbol) && !this.symbolTable.contains(symbol)) {
+          this.symbolTable.addEntry(symbol, commandNumber);
+        }
+        continue;
+      }
+
+      commandNumber++;
 
       this.precompiledInstructions.push(line);
     }
@@ -48,6 +63,7 @@ class Parser {
       }
     );
   }
+
   // 将预处理后的指令转换为二进制
   advance() {
     let symbolMnemonic = "";
@@ -62,12 +78,21 @@ class Parser {
       this.currentCommand = this.precompiledInstructions.shift();
       let commandType = this.commandType(this.currentCommand);
       if (commandType === CmdType.A_COMMAND) {
-        symbolMnemonic = this.Symbol();
-        commandBinary = this.decimalToBinary(symbolMnemonic, 16);
+        symbolMnemonic = this.Symbol(this.currentCommand);
+        if (isNaN(symbolMnemonic)) {
+          if (!this.symbolTable.contains(symbolMnemonic)) {
+            this.symbolTable.addEntry(symbolMnemonic, this.currentRamAddress);
+            this.currentRamAddress++;
+          }
+          const binaryString = this.symbolTable.getAddress(symbolMnemonic).toString(2); // 将数字转换为二进制字符串
+          commandBinary = binaryString.padStart(16, "0"); // 如果需要，用零填充二进制字符串
+        }  else {
+          commandBinary = this.decimalToBinary(symbolMnemonic, 16);
+        }
       } else if (commandType === CmdType.C_COMMAND) {
-        compBinary = this.Code.comp(this.comp());
-        destBinary = this.Code.dest(this.dest());
-        jumpBinary = this.Code.jump(this.jump());
+        compBinary = this.code.comp(this.comp());
+        destBinary = this.code.dest(this.dest());
+        jumpBinary = this.code.jump(this.jump());
         commandBinary = "111" + compBinary + destBinary + jumpBinary;
       }
       instructioins += commandBinary + "\n";
@@ -75,24 +100,32 @@ class Parser {
 
     return instructioins;
   }
+
   // 判断是否还有更多的指令
   hasMoreCommands() {
     return this.precompiledInstructions.length > 0;
   }
+
   // 返回当前指令的类型
-  commandType() {
-    if (this.currentCommand.startsWith("@")) {
+  commandType(command) {
+    if (command.startsWith("@")) {
       return CmdType.A_COMMAND;
-    } else if (this.currentCommand.startsWith("(")) {
+    } else if (command.startsWith("(")) {
       return CmdType.L_COMMAND;
     } else {
       return CmdType.C_COMMAND;
     }
   }
+
   // 返回当前指令的符号或十进制值
-  Symbol() {
-    return this.currentCommand.substring(1).trim();
+  Symbol(line) {
+    if (line.startsWith("@")) {
+      return line.substring(1).trim();
+    } else if (line.startsWith("(")) {
+      return line.substring(1, line.length - 2).trim();
+    }
   }
+
   // 返回当前指令的comp助记符
   comp() {
     const compIndex = this.currentCommand.indexOf("=");
@@ -111,6 +144,7 @@ class Parser {
     }
     return compMnemonic;
   }
+
   // 返回当前指令的dest助记符
   dest() {
     const destIndex = this.currentCommand.indexOf("=");
@@ -120,6 +154,7 @@ class Parser {
     }
     return destMnemonic;
   }
+
   // 返回当前指令的jump助记符
   jump() {
     const jumpIndex = this.currentCommand.indexOf(";");
@@ -129,6 +164,7 @@ class Parser {
     }
     return jumpMnemonic;
   }
+
   // 将十进制字符串转换为指定长度的二进制字符串
   decimalToBinary(decimalString, length) {
     const decimalNumber = parseInt(decimalString, 10); // 将十进制字符串转换为数字
